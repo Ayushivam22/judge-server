@@ -1,13 +1,10 @@
 import { promises as fs } from "fs";
 import path from "path";
-import { fileURLToPath } from "url";
+// import { fileURLToPath } from "url";
 
 import type { ProblemAssets, Workspace } from "./types.js";
 
-const ROOT_WORKSPACE = path.resolve(
-  path.dirname(fileURLToPath(import.meta.url)),
-  "../tmp/judge"
-);
+const ROOT_WORKSPACE = "/tmp/judge";
 
 /**
  * Creates an empty workspace for a submission.
@@ -44,6 +41,7 @@ export async function populateWorkspace(
     workspace.path,
     "main.cpp"
   );
+  console.log("driver:",driverPath)
 
   const testcasePath = path.join(
     workspace.path,
