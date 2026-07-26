@@ -1,10 +1,9 @@
 import { promises as fs } from "fs";
 import path from "path";
-// import { fileURLToPath } from "url";
 
 import type { ProblemAssets, Workspace } from "./types.js";
 
-const ROOT_WORKSPACE = "/tmp/judge";
+const ROOT_WORKSPACE = path.resolve(process.cwd(), "workspaces");
 
 /**
  * Creates an empty workspace for a submission.
