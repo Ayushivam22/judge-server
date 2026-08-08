@@ -1,6 +1,6 @@
 import { runProcess } from "../utils/process.js";
 import type { Workspace } from "../workspace/types.js";
-import type { ExecResult } from "./types.js";
+import type { ExecOptions, ExecResult } from "./types.js";
 
 import {
   DEFAULT_CAP_DROP,
@@ -18,7 +18,7 @@ interface DockerCreateOptions {
   image: string;
 }
 
-/**
+/** 
  * Creates a Docker container.
  *
  * The container is created in the stopped state.
@@ -63,13 +63,35 @@ export async function startContainer(
  */
 export async function execInContainer(
   containerId: string,
-  command: string[]
+  command: string[],
+  options?:ExecOptions
 ): Promise<ExecResult> {
-  const result = await runProcess("docker", [
-    "exec",
-    containerId,
-    ...command,
-  ]);
+  let args: string[];
+
+  if (options?.stdinFile) {
+    const commandString = [
+      ...command,
+      "<",
+      options.stdinFile,
+      ">",
+      "output.txt"
+    ].join(" ");
+
+    args = [
+      "exec",
+      containerId,
+      "sh",
+      "-c",
+      commandString,
+    ];
+  } else {
+    args = [
+      "exec",
+      containerId,
+      ...command,
+    ];
+  }
+  const result = await runProcess("docker",args);
 
   return {
     exitCode: result.exitCode,
@@ -141,7 +163,8 @@ function buildCreateArgs(
     "--workdir",
     DEFAULT_WORKDIR,
 
-    "--read-only",
+    // TODO : add this restriction after compiler and executor is working fine
+    // "--read-only",
 
     "-v",
     `${buildVolume(options.workspace)}:${DEFAULT_WORKDIR}`,

@@ -26,6 +26,10 @@ export interface ExecResult {
    */
   durationMs: number;
 }
+export interface ExecOptions {
+  stdinFile?: string,
+  timeoutMs?: number;
+}
 
 /**
  * Public interface representing a running container.
