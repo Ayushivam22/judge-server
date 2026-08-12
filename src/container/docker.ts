@@ -64,7 +64,7 @@ export async function startContainer(
 export async function execInContainer(
   containerId: string,
   command: string[],
-  options?:ExecOptions
+  options?: ExecOptions
 ): Promise<ExecResult> {
   let args: string[];
 
@@ -72,9 +72,7 @@ export async function execInContainer(
     const commandString = [
       ...command,
       "<",
-      options.stdinFile,
-      ">",
-      "output.txt"
+      options.stdinFile
     ].join(" ");
 
     args = [
@@ -91,7 +89,7 @@ export async function execInContainer(
       ...command,
     ];
   }
-  const result = await runProcess("docker",args);
+  const result = await runProcess("docker", args);
 
   return {
     exitCode: result.exitCode,
