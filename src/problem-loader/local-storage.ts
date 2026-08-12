@@ -2,7 +2,7 @@ import { promises as fs } from "fs";
 import path from "path";
 import type { StorageProvider } from "./types.js";
 
-const PROBLEMS_ROOT = "./judge/assets/problems/";
+const PROBLEMS_ROOT = path.join(process.cwd(), "assets", "problems");
 
 export const localStorage: StorageProvider = {
 
