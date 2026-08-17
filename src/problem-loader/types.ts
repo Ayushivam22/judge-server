@@ -1,6 +1,7 @@
 import path from "path";
 
-export const CACHE_ROOT = "/tmp/problem-cache";
+// TODO : fix path to use path module
+export const CACHE_ROOT = path.join("tmp", "problem-cache");
 
 export interface ProblemAssets {
     problemId: string;
@@ -21,6 +22,7 @@ export interface StorageProvider {
 }
 
 export function getProblemCacheDir(problemId: string) {
+    // console.log("CACHE-ROOT: ",CACHE_ROOT);
     return path.join(CACHE_ROOT, problemId);
 }
 
