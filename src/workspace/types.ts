@@ -54,63 +54,63 @@ export interface Workspace {
 // Problem Assets
 // =========================
 
-export interface ProblemAssets {
-  driverPath: string;
+// export interface ProblemAssets {
+//   driverPath: string;
 
-  testcasePath: string;
-}
+//   testcasePath: string;
+// }
 
-// =========================
-// Compile Result
-// =========================
+// // =========================
+// // Compile Result
+// // =========================
 
-export interface CompileResult {
-  success: boolean;
+// export interface CompileResult {
+//   success: boolean;
 
-  executable?: string;
+//   executable?: string;
 
-  stdout: string;
+//   stdout: string;
 
-  stderr: string;
+//   stderr: string;
 
-  compileTimeMs: number;
-}
+//   compileTimeMs: number;
+// }
 
-// =========================
-// Execution Result
-// =========================
+// // =========================
+// // Execution Result
+// // =========================
 
-export interface ExecutionResult {
-  exitCode: number;
-  signal?: NodeJS.Signals;
+// export interface ExecutionResult {
+//   exitCode: number;
+//   signal?: NodeJS.Signals;
 
-  timedOut: boolean;
+//   timedOut: boolean;
 
-  executionTimeMs: number;
+//   executionTimeMs: number;
 
-  memoryUsedMb: number;
+//   memoryUsedMb: number;
 
-  stdout: string;
+//   stdout: string;
 
-  stderr: string;
-}
+//   stderr: string;
+// }
 
-// =========================
-// Final Judge Result
-// =========================
+// // =========================
+// // Final Judge Result
+// // =========================
 
-export interface JudgeResult {
-  verdict: Verdict;
+// export interface JudgeResult {
+//   verdict: Verdict;
 
-  executionTimeMs?: number;
+//   executionTimeMs?: number;
 
-  memoryUsedMb?: number;
+//   memoryUsedMb?: number;
 
-  compileError?: string;
+//   compileError?: string;
 
-  runtimeError?: string;
-}
+//   runtimeError?: string;
+// }
 
-export interface Container {
-  id: string;
-}
+// export interface Container {
+//   id: string;
+// }

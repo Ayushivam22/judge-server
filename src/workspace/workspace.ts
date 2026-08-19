@@ -1,7 +1,7 @@
 import { promises as fs } from "fs";
 import path from "path";
 
-import type { ProblemAssets, Workspace } from "./types.js";
+import type { ProblemAssets, Workspace } from "../types.js";
 
 const ROOT_WORKSPACE = path.resolve(process.cwd(), "workspaces");
 
@@ -63,7 +63,7 @@ export async function populateWorkspace(
 /**
  * Deletes the workspace recursively.
  */
-export async function deleteWorkspace(
+export async function removeWorkspace(
   workspace: Workspace
 ): Promise<void> {
   await fs.rm(workspace.path, {
