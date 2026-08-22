@@ -7,6 +7,7 @@ export interface ProblemAssets {
     problemId: string;
     driverPath: string;
     testcasePath: string;
+    expectedOutputPath: string;
 }
 
 export interface StorageProvider {
@@ -16,6 +17,11 @@ export interface StorageProvider {
     ): Promise<void>;
 
     downloadTestcases(
+        problemId: string,
+        destination: string
+    ): Promise<void>;
+
+    downloadExpectedOutput(
         problemId: string,
         destination: string
     ): Promise<void>;
@@ -32,4 +38,8 @@ export function getDriverPath(problemId: string) {
 
 export function getTestcasePath(problemId: string) {
     return path.join(getProblemCacheDir(problemId), "testcases.txt");
+}
+
+export function getExpectedOutputPath(problemId: string) {
+    return path.join(getProblemCacheDir(problemId), "output.txt");
 }
