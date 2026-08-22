@@ -1,5 +1,6 @@
 import {
     getDriverPath,
+    getExpectedOutputPath,
     getTestcasePath
 } from "./types.js";
 
@@ -11,6 +12,7 @@ import {
 import { localStorage } from "./local-storage.js";
 
 export async function loadProblem(problemId: string) {
+    const expectedOutputPath = getExpectedOutputPath(problemId);
 
     if (!await cacheExists(problemId)) {
 
@@ -24,6 +26,10 @@ export async function loadProblem(problemId: string) {
             localStorage.downloadTestcases(
                 problemId,
                 getTestcasePath(problemId)
+            ),
+            localStorage.downloadExpectedOutput(
+                problemId,
+                expectedOutputPath
             )
         ]);
     }
@@ -31,6 +37,7 @@ export async function loadProblem(problemId: string) {
     return {
         problemId,
         driverPath: getDriverPath(problemId),
-        testcasePath: getTestcasePath(problemId)
+        testcasePath: getTestcasePath(problemId),
+        expectedOutputPath,
     };
 }
