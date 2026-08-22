@@ -1,6 +1,7 @@
 import { promises as fs } from "fs";
 import {
     getDriverPath,
+    getExpectedOutputPath,
     getProblemCacheDir,
     getTestcasePath
 } from "./types.js";
@@ -17,7 +18,8 @@ export async function exists(path: string): Promise<boolean> {
 export async function cacheExists(problemId: string) {
     return (
         await exists(getDriverPath(problemId)) &&
-        await exists(getTestcasePath(problemId))
+        await exists(getTestcasePath(problemId)) &&
+        await exists(getExpectedOutputPath(problemId))
     );
 }
 
