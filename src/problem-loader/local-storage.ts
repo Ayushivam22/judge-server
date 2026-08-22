@@ -18,6 +18,13 @@ export const localStorage: StorageProvider = {
             path.join(PROBLEMS_ROOT, problemId, "testcases.txt"),
             destination
         );
+    },
+
+    async downloadExpectedOutput(problemId, destination) {
+        await fs.copyFile(
+            path.join(PROBLEMS_ROOT, problemId, "output.txt"),
+            destination
+        );
     }
 
 };
