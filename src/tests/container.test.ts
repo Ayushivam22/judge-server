@@ -1,7 +1,7 @@
 import { promises as fs } from "node:fs";
 import path from "node:path";
 
-import { createWorkspace, deleteWorkspace } from "../workspace/workspace.js";
+import { createWorkspace, removeWorkspace } from "../workspace/index.js";
 import { createContainer } from "../container/index.js";
 
 async function expect(
@@ -110,7 +110,7 @@ async function main() {
     await container.remove();
   });
 
-  await deleteWorkspace(workspace);
+  await removeWorkspace(workspace);
 
   console.log("\n============================================");
   console.log("✅ All Container Module Tests Passed");
