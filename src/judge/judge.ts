@@ -33,11 +33,12 @@ import {
 import {
   evaluate,
 } from "../evaluation/index.js";
+import type { JudgeResult } from "./types.js";
 
 
 export async function judgeSubmission(
   submission: Submission
-): Promise<Verdict> {
+): Promise<JudgeResult> {
 
   let workspace: Workspace | undefined;
   let container: Container | undefined;
@@ -51,7 +52,7 @@ export async function judgeSubmission(
     const problem = await loadProblem(
       submission.problemId
     );
-    //console.log("Problem Loaded")
+    // console.log("Problem Loaded:",problem)
     
     
     // -----------------------------------------
@@ -61,7 +62,7 @@ export async function judgeSubmission(
     workspace = await createWorkspace(
       submission.id
     );
-    //console.log("Workspace Created")
+    // console.log("Workspace Created:",workspace)
     
     
     // -----------------------------------------
@@ -73,7 +74,7 @@ export async function judgeSubmission(
       problem,
       submission.sourceCode
     );
-      //console.log("Workspace Populated")
+      // console.log("Workspace Populated:",workspace)
       
       
     // -----------------------------------------
@@ -83,7 +84,7 @@ export async function judgeSubmission(
     container = await createContainer({
       workspace,
     });
-    ////console.log("Container Created")
+    // console.log("Container Created:",container)
     
     
     // -----------------------------------------
@@ -91,10 +92,13 @@ export async function judgeSubmission(
     // -----------------------------------------
     
     const compileResult = await compile(container.id);
-    //console.log("CompileResult: ",compileResult)
+    // console.log("CompileResult: ",compileResult)
     
     if (!compileResult.success) {
-      return Verdict.COMPILATION_ERROR;
+      return {
+        verdict: Verdict.COMPILATION_ERROR,
+        compileOutput: compileResult.stderr
+      };
     }
 
 
@@ -106,7 +110,9 @@ export async function judgeSubmission(
     // All test cases are supplied together.
     //
 
-    const executionResult = await execute(container.id, problem.testcasePath);
+    const executionResult = await execute(container.id, "testcases.txt");
+    // TODO : remove this console
+    // console.log(executionResult)
 
 
     // -----------------------------------------
@@ -116,16 +122,24 @@ export async function judgeSubmission(
     switch (executionResult.status) {
 
       case ExecutionStatus.RUNTIME_ERROR:
-        return Verdict.RUNTIME_ERROR;
+        return {
+          verdict: Verdict.RUNTIME_ERROR,
+          runtimeOutput: executionResult.stderr
+        };
 
       case ExecutionStatus.TIME_LIMIT_EXCEEDED:
-        return Verdict.TIME_LIMIT_EXCEEDED;
+        return {
+          verdict: Verdict.TIME_LIMIT_EXCEEDED,
+          executionTimeMs: executionResult.durationMs
+        };
 
       case ExecutionStatus.SUCCESS:
         break;
 
       default:
-        return Verdict.INTERNAL_ERROR;
+        return {
+          verdict: Verdict.INTERNAL_ERROR
+        };
     }
 
 
@@ -144,10 +158,14 @@ export async function judgeSubmission(
     );
 
     if (evaluationResult.status === EvaluationStatus.ACCEPTED) {
-      return Verdict.ACCEPTED;
+      return {
+        verdict: Verdict.ACCEPTED
+      };
     }
 
-    return Verdict.WRONG_ANSWER;
+    return {
+      verdict: Verdict.WRONG_ANSWER
+    }
 
   } catch (error) {
 
@@ -156,7 +174,9 @@ export async function judgeSubmission(
       error
     );
 
-    return Verdict.INTERNAL_ERROR;
+    return {
+      verdict: Verdict.INTERNAL_ERROR
+    };
 
   } finally {
 
@@ -176,9 +196,9 @@ export async function judgeSubmission(
     }
 
 
-    // -----------------------------------------
-    // 10. Remove workspace
-    // -----------------------------------------
+    // // -----------------------------------------
+    // // 10. Remove workspace
+    // // -----------------------------------------
 
     if (workspace) {
       try {
