@@ -1,30 +1,52 @@
-
 import S3 from "./connect_s3.js";
 import { GetObjectCommand } from "@aws-sdk/client-s3";
-import {promises as fs} from "fs";
+import { promises as fs } from "fs";
 
-import { type StorageProvider } from "../types.js"
+import { type StorageProvider } from "../types.js";
+
 async function downloadFile(
     key: string,
     destination: string
 ) {
-    const response = await S3.send(
-        new GetObjectCommand({
-            Bucket: process.env.AWS_S3_BUCKET,
-            Key: key
-        })
-    );
+    try {
+        const response = await S3.send(
+            new GetObjectCommand({
+                Bucket: process.env.AWS_S3_BUCKET,
+                Key: key
+            })
+        );
 
-    if (!response.Body) {
-        throw new Error(`Empty S3 object: ${key}`);
+        if (!response.Body) {
+            throw new Error(`Empty S3 object: ${key}`);
+        }
+
+        const data = await response.Body.transformToByteArray();
+
+        await fs.writeFile(destination, data);
+
+    } catch (error) {
+
+        if (
+            error instanceof Error &&
+            (
+                error.name === "NoSuchKey" ||
+                error.name === "NotFound"
+            )
+        ) {
+            throw new Error(
+                `S3 object not found: ${key}`,
+                { cause: error }
+            );
+        }
+
+        throw new Error(
+            `Failed to download S3 object: ${key}`,
+            { cause: error }
+        );
     }
-
-    const data = await response.Body.transformToByteArray();
-
-    await fs.writeFile(destination, data);
 }
 
-export const s3Storage: StorageProvider = {
+export const S3Storage: StorageProvider = {
 
     async downloadDriver(problemId, destination) {
         await downloadFile(
