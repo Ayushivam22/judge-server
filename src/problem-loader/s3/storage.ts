@@ -8,22 +8,15 @@ async function downloadFile(
     key: string,
     destination: string
 ) {
+    let response;
+
     try {
-        const response = await S3.send(
+        response = await S3.send(
             new GetObjectCommand({
                 Bucket: process.env.AWS_S3_BUCKET,
                 Key: key
             })
         );
-
-        if (!response.Body) {
-            throw new Error(`Empty S3 object: ${key}`);
-        }
-
-        const data = await response.Body.transformToByteArray();
-
-        await fs.writeFile(destination, data);
-
     } catch (error) {
 
         if (
@@ -40,7 +33,22 @@ async function downloadFile(
         }
 
         throw new Error(
-            `Failed to download S3 object: ${key}`,
+            `S3 request failed for: ${key}`,
+            { cause: error }
+        );
+    }
+
+    if (!response.Body) {
+        throw new Error(`Empty S3 object: ${key}`);
+    }
+
+    const data = await response.Body.transformToByteArray();
+
+    try {
+        await fs.writeFile(destination, data);
+    } catch (error) {
+        throw new Error(
+            `Failed to write downloaded file to: ${destination}`,
             { cause: error }
         );
     }
