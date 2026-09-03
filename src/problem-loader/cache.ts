@@ -29,3 +29,12 @@ export async function createCache(problemId: string) {
         { recursive: true }
     );
 }
+export async function removeCache(problemId: string) {
+    await fs.rm(
+        getProblemCacheDir(problemId),
+        {
+            recursive: true,
+            force: true
+        }
+    );
+}
