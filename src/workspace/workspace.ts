@@ -1,9 +1,10 @@
 import { promises as fs } from "fs";
+import os from "os";
 import path from "path";
 
 import type { ProblemAssets, Workspace } from "../types.js";
 
-const ROOT_WORKSPACE = path.resolve(process.cwd(), "workspaces");
+const ROOT_WORKSPACE = path.resolve(os.tmpdir(), "judge", "workspaces");
 
 /**
  * Creates an empty workspace for a submission.
@@ -40,7 +41,7 @@ export async function populateWorkspace(
     workspace.path,
     "main.cpp"
   );
-  console.log("driver:",driverPath)
+  console.log("driver:", driverPath)
 
   const testcasePath = path.join(
     workspace.path,
